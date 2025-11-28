@@ -1,0 +1,24 @@
+# Docker configuration example
+# Copy this to config.yaml and fill in the values
+
+server:
+  port: 7643
+
+database:
+  host: db  # Use 'db' for docker-compose, or your actual host
+  port: 5432
+  user: cosine
+  password: cosine123
+  dbname: cosine2api
+  sslmode: disable
+
+upstream:
+  base_url: https://api.cosine.sh
+
+linuxdo:
+  client_id: your_client_id
+  client_secret: your_client_secret
+  backend_base_url: "http://your-domain:7643"
+
+jwt:
+  secret: "your_jwt_secret_key_here_change_me"

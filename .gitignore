@@ -1,0 +1,33 @@
+# Binaries
+cosine
+cosine.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Config with secrets
+config.yaml
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+*.test
+*.out
+coverage.html
+
+# Vendor (if not committing)
+# vendor/
+
+# Build output
+dist/
+build/
