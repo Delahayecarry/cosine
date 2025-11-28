@@ -5,7 +5,7 @@ database:
   host: 192.168.0.104
   port: 5432
   user: postgres
-  password: cao1411595711
+  password: yourpassword
   dbname: cosine2api
   sslmode: disable
 
@@ -13,9 +13,9 @@ upstream:
   base_url: https://api.cosine.sh
 
 linuxdo:
-  client_id: w0XW95nAehZXLzHcSid9hnX3mGwKZjt2
-  client_secret: 6YjGbWluZnhJWaojcFzKFKsAomSnZ07T
-  backend_base_url: "http://172.20.51.232:7643"
+  client_id: yourclientid
+  client_secret: yourclientsecret
+  backend_base_url: "http://127.0.0.1:7643"
 
 jwt:
   secret: "your_jwt_secret_key_here"
