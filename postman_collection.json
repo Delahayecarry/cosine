@@ -10,6 +10,12 @@
 			"key": "base_url",
 			"value": "http://localhost:8080",
 			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token from LinuxDo OAuth login"
 		}
 	],
 	"item": [
@@ -104,6 +110,113 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Get LinuxDo Auth URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.url) {",
+									"    console.log('Open this URL in browser to login:', jsonData.url);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/linuxdo/url",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "linuxdo", "url"]
+						},
+						"description": "Get the LinuxDo OAuth authorization URL. Open the returned URL in a browser to login."
+					},
+					"response": []
+				},
+				{
+					"name": "LinuxDo Callback",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('jwt_token', jsonData.token);",
+									"    console.log('JWT token saved to collection variable');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/linuxdo/callback?code=YOUR_AUTH_CODE&state=YOUR_STATE",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "linuxdo", "callback"],
+							"query": [
+								{
+									"key": "code",
+									"value": "YOUR_AUTH_CODE",
+									"description": "Authorization code from LinuxDo OAuth"
+								},
+								{
+									"key": "state",
+									"value": "YOUR_STATE",
+									"description": "State parameter from auth URL request"
+								}
+							]
+						},
+						"description": "Exchange the OAuth code for a JWT token. The token will be automatically saved to the jwt_token variable."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Protected",
+			"item": [
+				{
+					"name": "Donate Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"description": "JWT token from LinuxDo login"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"auth\": \"your_firebase_session_token\",\n  \"team_id\": \"your_team_id\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/donate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "donate"]
+						},
+						"description": "Donate your Cosine auth credentials. Requires JWT authentication from LinuxDo login."
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

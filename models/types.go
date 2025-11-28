@@ -88,7 +88,7 @@ type Account struct {
 	ID        int       `json:"id"`
 	Auth      string    `json:"auth"`
 	TeamID    string    `json:"team_id"`
-	LinuxdoID *string   `json:"linuxdo_id"`
+	LinuxdoID *int      `json:"linuxdo_id"`
 	IsActive  bool      `json:"is_active"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

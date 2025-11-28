@@ -11,3 +11,11 @@ database:
 
 upstream:
   base_url: https://api.cosine.sh
+
+linuxdo:
+  client_id: w0XW95nAehZXLzHcSid9hnX3mGwKZjt2
+  client_secret: 6YjGbWluZnhJWaojcFzKFKsAomSnZ07T
+  backend_base_url: "http://172.20.51.232:7643"
+
+jwt:
+  secret: "your_jwt_secret_key_here"

@@ -10,6 +10,18 @@ type Config struct {
 	Server   ServerConfig   `yaml:"server"`
 	Database DatabaseConfig `yaml:"database"`
 	Upstream UpstreamConfig `yaml:"upstream"`
+	LinuxDo  LinuxDoConfig  `yaml:"linuxdo"`
+	JWT      JWTConfig      `yaml:"jwt"`
+}
+
+type LinuxDoConfig struct {
+	ClientID       string `yaml:"client_id"`
+	ClientSecret   string `yaml:"client_secret"`
+	BackendBaseURL string `yaml:"backend_base_url"`
+}
+
+type JWTConfig struct {
+	Secret string `yaml:"secret"`
 }
 
 type ServerConfig struct {

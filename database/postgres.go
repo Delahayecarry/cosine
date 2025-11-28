@@ -116,3 +116,55 @@ func GetAccountCount() (int, error) {
 	err := db.QueryRow(`SELECT COUNT(*) FROM accounts WHERE is_active = true`).Scan(&count)
 	return count, err
 }
+
+// CreateAccount 创建新的捐赠账户
+func CreateAccount(auth, teamID string, linuxdoID int) (*models.Account, error) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	var acc models.Account
+
+	err := db.QueryRow(`
+		INSERT INTO accounts (auth, team_id, linuxdo_id, is_active, created_at, updated_at)
+		VALUES ($1, $2, $3, true, NOW(), NOW())
+		RETURNING id, auth, team_id, linuxdo_id, is_active, created_at, updated_at
+	`, auth, teamID, linuxdoID).Scan(
+		&acc.ID, &acc.Auth, &acc.TeamID, &acc.LinuxdoID,
+		&acc.IsActive, &acc.CreatedAt, &acc.UpdatedAt,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create account: %w", err)
+	}
+
+	log.Printf("New account donated by linuxdo_id: %d", linuxdoID)
+	return &acc, nil
+}
+
+// GetAccountsByLinuxdoID 获取指定用户捐赠的所有账户
+func GetAccountsByLinuxdoID(linuxdoID int) ([]models.Account, error) {
+	rows, err := db.Query(`
+		SELECT id, auth, team_id, linuxdo_id, is_active, created_at, updated_at
+		FROM accounts
+		WHERE linuxdo_id = $1
+		ORDER BY created_at DESC
+	`, linuxdoID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var accounts []models.Account
+	for rows.Next() {
+		var acc models.Account
+		err := rows.Scan(
+			&acc.ID, &acc.Auth, &acc.TeamID, &acc.LinuxdoID,
+			&acc.IsActive, &acc.CreatedAt, &acc.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		accounts = append(accounts, acc)
+	}
+
+	return accounts, nil
+}

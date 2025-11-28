@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"cosine/auth"
 	"cosine/config"
 	"cosine/database"
 	"cosine/handlers"
@@ -32,6 +33,17 @@ func main() {
 	r.GET("/health", handlers.HealthHandler)
 	r.GET("/v1/models", handlers.ModelsHandler)
 	r.POST("/v1/chat/completions", handlers.ChatCompletionsHandler)
+
+	// LinuxDo OAuth routes
+	r.GET("/api/auth/linuxdo/url", handlers.LinuxDoAuthURLHandler)
+	r.GET("/api/auth/linuxdo/callback", handlers.LinuxDoCallbackHandler)
+
+	// Protected routes (require JWT auth)
+	protected := r.Group("/api")
+	protected.Use(auth.AuthMiddleware())
+	{
+		protected.POST("/donate", handlers.DonateHandler)
+	}
 
 	// Start server
 	addr := fmt.Sprintf(":%d", cfg.Server.Port)
